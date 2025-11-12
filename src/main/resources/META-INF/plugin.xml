@@ -1,0 +1,49 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.fathuhu.gitmerge</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-name -->
+    <name>Git Merge</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor url="https://www.fathuhu.com">fathuhu</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/best-practices-for-listing.html#plugin-description -->
+    <description><![CDATA[
+        Provides support for My Framework.
+        The support includes:
+        <ul>
+          <li>code completion</li>
+          <li>references</li>
+        </ul>
+        在 Git 分支菜单中添加 "将当前分支合并到这里"。
+        <a href="https://example.com">project site</a>.
+        ]]>
+
+    </description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.vcs</depends>
+    <depends>Git4Idea</depends>
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="Git Merge" displayType="BALLOON"/>
+
+    </extensions>
+    <actions>
+        <action
+                id="com.fathuhu.gitmerge.MergeToBranchAction"
+                class="com.fathuhu.gitmerge.MergeToBranchAction"
+                text="merge to branch🤤"
+                description="将当前分支合并到此分支（调用 merge.sh 脚本）">
+            <add-to-group group-id="Git.Branch" anchor="after" relative-to-action="Git.Branches"/>
+        </action>
+    </actions>
+</idea-plugin>
