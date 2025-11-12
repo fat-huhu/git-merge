@@ -23,6 +23,7 @@ class MergeToBranchAction : AnAction() {
     // 自定义 DataKey 用于获取目标分支名
     companion object {
         val TARGET_BRANCH_KEY: DataKey<String> = DataKey.create("Fathuhu.MergeToBranch.TargetBranch")
+        val dataKey: DataKey<String> = DataKey.create("Git.Branches")
     }
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -31,13 +32,18 @@ class MergeToBranchAction : AnAction() {
 
         val currentBranch = GitBranchUtil.getBranchNameOrRev(repo) ?: return
 
-        // todo: 获取目标分支名
-        val targetBranch = e.getData(TARGET_BRANCH_KEY) ?: repo.currentBranch?.name
+        // 获取目标分支名
+        var targetBranch = getSelectedBranchName(e)
         if (targetBranch == null) {
             notify(project, "无法识别目标分支", NotificationType.ERROR)
             return
         }
-
+        if (targetBranch.startsWith("[refs/remotes/origin/")) {
+            targetBranch = targetBranch.removePrefix("[refs/remotes/origin/")
+        }
+        if (targetBranch.endsWith("]")) {
+            targetBranch = targetBranch.removeSuffix("]")
+        }
         if (currentBranch == targetBranch) {
             notify(project, "当前分支与目标分支相同，无需合并", NotificationType.WARNING)
             return
@@ -146,5 +152,11 @@ class MergeToBranchAction : AnAction() {
 
     private fun notify(project: Project, msg: String, type: NotificationType) {
         Notifications.Bus.notify(Notification("Git Merge", "Git Merge", msg, type), project)
+    }
+
+    private fun getSelectedBranchName(e: AnActionEvent): String? {
+
+        return (e.dataContext as CustomizedDataContext).getCustomizedDelegate().getData(dataKey)
+            .toString();
     }
 }
